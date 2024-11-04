@@ -1,0 +1,5 @@
+(library
+ (name gtkwave_wrapper)
+ (libraries async core core_unix cohttp cohttp-async)
+ (preprocess
+  (pps ppx_jane)))

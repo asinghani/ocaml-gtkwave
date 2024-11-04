@@ -1,0 +1,5 @@
+(executable
+ (name gtkwave_test)
+ (libraries core core_unix.command_unix gtkwave_wrapper)
+ (preprocess
+  (pps ppx_jane)))
