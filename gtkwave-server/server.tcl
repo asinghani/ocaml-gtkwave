@@ -103,7 +103,7 @@ clay::define ::reply.get_displayed_waves {
     my puts $totalNumTraces
     for {set i 0} {$i < $totalNumTraces} {incr i} {
       set traceName [gtkwave::getTraceNameFromIndex $i]
-      my puts "$i,$traceName"
+      my puts "$traceName"
     }
   }
 }
@@ -204,14 +204,23 @@ clay::define ::reply.set_window_time_range {
 HTTPD uri add * /get_signal_value_at_time [list mixin {content reply.get_signal_value_at_time}]
 clay::define ::reply.get_signal_value_at_time {
   method content {} {
+    gtkwave::/Edit/UnHighlight_All
     set formdata [dict merge [my FormData]]
     set signal [dict get $formdata signal]
     set time [dict get $formdata time]
-    lassign [gtkwave::signalChangeList $signal -start_time $time -max 1] _ value
-    if {$value eq ""} {
-      my error 500 "Error: signal not found"
-    } else {
-      my puts $value
+    switch -- [gtkwave::addSignalsFromList [list $signal]] {
+      0 { my error 500 "Error: Failed to find signal" }
+      default {
+        gtkwave::/Edit/Data_Format/Binary
+        lassign [gtkwave::signalChangeList $signal -start_time $time -max 1] _ value
+        if {$value eq ""} {
+          my error 500 "Error: signal not found"
+        } else {
+          my puts $value
+        }
+        gtkwave::/Edit/Delete
+        gtkwave::/Edit/UnHighlight_All
+      }
     }
   }
 }
@@ -226,16 +235,26 @@ clay::define ::reply.get_signal_transitions {
     set end_time [dict get $formdata end_time]
     set max [dict get $formdata max]
     set direction [dict get $formdata direction]
-    set transitions [gtkwave::signalChangeList $signal -start_time $start_time \
-      -end_time $end_time -max $max -dir $direction]
 
-    if {$transitions eq ""} {
-      my error 500 "Error: signal not found"
-    } else {
-      foreach {time value} $transitions {
-        my puts "$time,$value"
+    switch -- [gtkwave::addSignalsFromList [list $signal]] {
+      0 { my error 500 "Error: Failed to find signal" }
+      default {
+        gtkwave::/Edit/Data_Format/Binary
+        set transitions [gtkwave::signalChangeList $signal -start_time $start_time \
+          -end_time $end_time -max $max -dir $direction]
+
+        if {$transitions eq ""} {
+          my error 500 "Error: signal not found"
+        } else {
+          foreach {time value} $transitions {
+            my puts "$time,$value"
+          }
+        }
+        gtkwave::/Edit/Delete
+        gtkwave::/Edit/UnHighlight_All
       }
     }
+
   }
 }
 

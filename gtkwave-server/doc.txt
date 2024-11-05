@@ -1,5 +1,3 @@
-# set formdata [dict merge [my FormData]]
-# my puts "[dict get $form abcd]"
 # POST /call_menu_item Args: [item=STRING]
 # POST /add_comment_trace Args: [comment=STRING]
 # POST /add_wave Args: [signal=STRING]
