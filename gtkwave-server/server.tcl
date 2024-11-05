@@ -1,3 +1,13 @@
+# A HTTP server for GTKWave's Tcl interface
+# Tested with GTKWave v3.3.116
+# Requires [tcllib]
+#
+# Security: This does not handle any input sanitization. This server should
+# only ever be run on a link-local address, Do NOT expose to an external
+# network.
+#
+# Use: Launch gtkwave with the `-W` flag. Once the Tcl REPL launches, run
+# [source server.tcl] to start the server.
 package require httpd 4.1
 httpd::server create HTTPD port 8015 myaddr "127.0.0.1"
 
