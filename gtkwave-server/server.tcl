@@ -3,9 +3,6 @@ httpd::server create HTTPD port 8015 myaddr "127.0.0.1"
 
 HTTPD plugin dispatch ::httpd::plugin.dict_dispatch
 
-# set formdata [dict merge [my FormData]]
-# my puts "[dict get $form abcd]"
-
 # POST /call_menu_item Args: [item=STRING]
 HTTPD uri add * /call_menu_item [list mixin {content reply.call_menu_item}]
 clay::define ::reply.call_menu_item {
