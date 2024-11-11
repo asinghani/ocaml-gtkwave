@@ -35,8 +35,15 @@ let add_comment_trace ~comment t =
   make_request_unit t ~endpoint:"add_comment_trace" ~args:[ "comment", comment ]
 ;;
 
-let add_wave ~signal t =
-  make_request_unit t ~endpoint:"add_wave" ~args:[ "signal", signal ]
+let add_wave ?(color = Normal) ?(format = Hex) ~signal t =
+  make_request_unit
+    t
+    ~endpoint:"add_wave"
+    ~args:
+      [ "signal", signal
+      ; "color", Wave_color.to_string color
+      ; "format", Wave_format.to_string format
+      ]
 ;;
 
 let remove_wave ~signal t =

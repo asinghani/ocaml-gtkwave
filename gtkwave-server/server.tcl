@@ -13,7 +13,8 @@ httpd::server create HTTPD port 8015 myaddr "127.0.0.1"
 
 HTTPD plugin dispatch ::httpd::plugin.dict_dispatch
 
-# POST /call_menu_item Args: [item=STRING]
+# POST /call_menu_item
+#    Args: [item=STRING]
 HTTPD uri add * /call_menu_item [list mixin {content reply.call_menu_item}]
 clay::define ::reply.call_menu_item {
   method content {} {
@@ -23,7 +24,8 @@ clay::define ::reply.call_menu_item {
   }
 }
 
-# POST /add_comment_trace Args: [comment=STRING]
+# POST /add_comment_trace
+#    Args: [comment=STRING]
 HTTPD uri add * /add_comment_trace [list mixin {content reply.add_comment_trace}]
 clay::define ::reply.add_comment_trace {
   method content {} {
@@ -34,7 +36,8 @@ clay::define ::reply.add_comment_trace {
   }
 }
 
-# POST /add_wave Args: [signal=STRING]
+# POST /add_wave
+#    Args: [signal=STRING]
 HTTPD uri add * /add_wave [list mixin {content reply.add_wave}]
 clay::define ::reply.add_wave {
   method content {} {
@@ -47,7 +50,32 @@ clay::define ::reply.add_wave {
   }
 }
 
-# POST /remove_wave Args: [signal=STRING]
+# POST /add_wave_advanced
+#    Args: [signal=STRING color=STRING format=STRING]
+#    Color options: Normal/Red/Orange/Yellow/Green/Blue/Indigo/Violet
+#    Format options: Hex/Decimal/Signed_Decimal/Binary/Octal/ASCII
+HTTPD uri add * /add_wave_advanced [list mixin {content reply.add_wave_advanced}]
+clay::define ::reply.add_wave_advanced {
+  method content {} {
+    set formdata [dict merge [my FormData]]
+    set signal [dict get $formdata signal]
+    set color [dict get $formdata color]
+    set format_ [dict get $formdata format]
+    gtkwave::/Edit/UnHighlight_All
+    switch -- [gtkwave::addSignalsFromList [list $signal]] {
+      0 { my error 500 "Error: Failed to find signal" }
+      default { 
+        gtkwave::/Edit/Data_Format/$format_
+        gtkwave::/Edit/Color_Format/$color
+        my puts "OK"
+      }
+    }
+    gtkwave::/Edit/UnHighlight_All
+  }
+}
+
+# POST /remove_wave
+#    Args: [signal=STRING]
 HTTPD uri add * /remove_wave [list mixin {content reply.remove_wave}]
 clay::define ::reply.remove_wave {
   method content {} {
@@ -60,7 +88,8 @@ clay::define ::reply.remove_wave {
   }
 }
 
-# POST /find_next_edge Args: [signal=STRING]
+# POST /find_next_edge
+#    Args: [signal=STRING]
 HTTPD uri add * /find_next_edge [list mixin {content reply.find_next_edge}]
 clay::define ::reply.find_next_edge {
   method content {} {
@@ -74,7 +103,8 @@ clay::define ::reply.find_next_edge {
   }
 }
 
-# POST /find_prev_edge Args: [signal=STRING]
+# POST /find_prev_edge
+#    Args: [signal=STRING]
 HTTPD uri add * /find_prev_edge [list mixin {content reply.find_prev_edge}]
 clay::define ::reply.find_prev_edge {
   method content {} {
@@ -102,7 +132,8 @@ clay::define ::reply.open_tree_node {
   }
 }
 
-# GET /get_displayed_waves (NOTE: this excludes comment and blank traces, so it does not match trace indices)
+# GET /get_displayed_waves 
+#    (NOTE: this excludes comment and blank traces, so it does not match trace indices)
 HTTPD uri add * /get_displayed_waves [list mixin {content reply.get_displayed_waves}]
 clay::define ::reply.get_displayed_waves {
   method content {} {
@@ -159,7 +190,8 @@ clay::define ::reply.get_marker_position {
   }
 }
 
-# POST /set_marker_position Args: [position=INT] (-1 to remove)
+# POST /set_marker_position 
+#    Args: [position=INT] (-1 to remove)
 HTTPD uri add * /set_marker_position [list mixin {content reply.set_marker_position}]
 clay::define ::reply.set_marker_position {
   method content {} {
@@ -169,7 +201,8 @@ clay::define ::reply.set_marker_position {
   }
 }
 
-# POST /get_named_marker_position Args:[marker=A-Z] (-1 means not added)
+# POST /get_named_marker_position
+#    Args:[marker=A-Z] (-1 means not added)
 HTTPD uri add * /get_named_marker_position [list mixin {content reply.get_named_marker_position}]
 clay::define ::reply.get_named_marker_position {
   method content {} {
@@ -178,7 +211,8 @@ clay::define ::reply.get_named_marker_position {
   }
 }
 
-# POST /set_named_marker_position Args: [marker=A-Z position=INT comment=STRING] (-1 to remove)
+# POST /set_named_marker_position
+#    Args: [marker=A-Z position=INT comment=STRING] (-1 to remove)
 HTTPD uri add * /set_named_marker_position [list mixin {content reply.set_named_marker_position}]
 clay::define ::reply.set_named_marker_position {
   method content {} {
@@ -197,7 +231,8 @@ clay::define ::reply.get_window_time_range {
   }
 }
 
-# POST /set_window_time_range Args: [start=INT end=INT]
+# POST /set_window_time_range
+#    Args: [start=INT end=INT]
 HTTPD uri add * /set_window_time_range [list mixin {content reply.set_window_time_range}]
 clay::define ::reply.set_window_time_range {
   method content {} {
@@ -207,7 +242,8 @@ clay::define ::reply.set_window_time_range {
   }
 }
 
-# POST /get_signal_value_at_time Args: [signal=STRING time=INT]
+# POST /get_signal_value_at_time
+#    Args: [signal=STRING time=INT]
 HTTPD uri add * /get_signal_value_at_time [list mixin {content reply.get_signal_value_at_time}]
 clay::define ::reply.get_signal_value_at_time {
   method content {} {
@@ -232,7 +268,8 @@ clay::define ::reply.get_signal_value_at_time {
   }
 }
 
-# POST /get_signal_transitions Args: [signal=STRING start_time=INT end_time=INT max=INT direction=forward/backward]
+# POST /get_signal_transitions
+#    Args: [signal=STRING start_time=INT end_time=INT max=INT direction=forward/backward]
 HTTPD uri add * /get_signal_transitions [list mixin {content reply.get_signal_transitions}]
 clay::define ::reply.get_signal_transitions {
   method content {} {
@@ -273,7 +310,8 @@ clay::define ::reply.reload_file {
   }
 }
 
-# POST /highlight_signal Args: [signal=STRING]
+# POST /highlight_signal
+#    Args: [signal=STRING]
 HTTPD uri add * /highlight_signal [list mixin {content reply.highlight_signal}]
 clay::define ::reply.highlight_signal {
   method content {} {
@@ -294,7 +332,8 @@ clay::define ::reply.unhighlight_all {
   }
 }
 
-# POST /set_filter_directory Args: [path=STRING]
+# POST /set_filter_directory
+#    Args: [path=STRING]
 HTTPD uri add * /set_filter_directory [list mixin {content reply.set_filter_directory}]
 clay::define ::reply.set_filter_directory {
   method content {} {
@@ -304,7 +343,9 @@ clay::define ::reply.set_filter_directory {
   }
 }
 
-# POST /load_translate_file Args: [filename=STRING] (Path can be relative to filter directory or absolute)
+# POST /load_translate_file
+#    Args: [filename=STRING]
+#    (Path can be relative to filter directory or absolute)
 HTTPD uri add * /load_translate_file [list mixin {content reply.load_translate_file}]
 clay::define ::reply.load_translate_file {
   method content {} {
@@ -316,7 +357,9 @@ clay::define ::reply.load_translate_file {
   }
 }
 
-# POST /load_translate_process_file Args: [filename=STRING] (Path can be relative to filter directory or absolute)
+# POST /load_translate_process_file
+#    Args: [filename=STRING]
+#    (Path can be relative to filter directory or absolute)
 HTTPD uri add * /load_translate_process_file [list mixin {content reply.load_translate_process_file}]
 clay::define ::reply.load_translate_process_file {
   method content {} {
@@ -328,7 +371,9 @@ clay::define ::reply.load_translate_process_file {
   }
 }
 
-# POST /load_transaction_process_file Args: [filename=STRING] (Path can be relative to filter directory or absolute)
+# POST /load_transaction_process_file
+#    Args: [filename=STRING]
+#    (Path can be relative to filter directory or absolute)
 HTTPD uri add * /load_transaction_process_file [list mixin {content reply.load_transaction_process_file}]
 clay::define ::reply.load_transaction_process_file {
   method content {} {
@@ -340,7 +385,9 @@ clay::define ::reply.load_transaction_process_file {
   }
 }
 
-# POST /apply_translate_file Args: [signal=STRING filename=STRING] (Path can be relative to filter directory or absolute)
+# POST /apply_translate_file
+#    Args: [signal=STRING filename=STRING]
+#    (Path can be relative to filter directory or absolute)
 HTTPD uri add * /apply_translate_file [list mixin {content reply.apply_translate_file}]
 clay::define ::reply.apply_translate_file {
   method content {} {
@@ -362,7 +409,9 @@ clay::define ::reply.apply_translate_file {
   }
 }
 
-# POST /apply_translate_process_file Args: [signal=STRING filename=STRING] (Path can be relative to filter directory or absolute)
+# POST /apply_translate_process_file
+#    Args: [signal=STRING filename=STRING]
+#    (Path can be relative to filter directory or absolute)
 HTTPD uri add * /apply_translate_process_file [list mixin {content reply.apply_translate_process_file}]
 clay::define ::reply.apply_translate_process_file {
   method content {} {
@@ -384,7 +433,9 @@ clay::define ::reply.apply_translate_process_file {
   }
 }
 
-# POST /apply_transaction_process_file Args: [signal=STRING filename=STRING] (Path can be relative to filter directory or absolute)
+# POST /apply_transaction_process_file
+#    Args: [signal=STRING filename=STRING]
+#    (Path can be relative to filter directory or absolute)
 HTTPD uri add * /apply_transaction_process_file [list mixin {content reply.apply_transaction_process_file}]
 clay::define ::reply.apply_transaction_process_file {
   method content {} {

@@ -12,8 +12,14 @@ val call_menu_item : path:string list -> t -> unit Deferred.Or_error.t
     list *)
 val add_comment_trace : comment:string -> t -> unit Deferred.Or_error.t
 
-(** Add the given signal as a wave *)
-val add_wave : signal:string -> t -> unit Deferred.Or_error.t
+(** Add the given signal as a wave. If not specified, [format] defaults to Hex,
+    and [color] defaults to the GTKwave default signal color *)
+val add_wave
+  :  ?color:Wave_color.t
+  -> ?format:Wave_format.t
+  -> signal:string
+  -> t
+  -> unit Deferred.Or_error.t
 
 (** Remove all copies of the given signal if they have been added as waves *)
 val remove_wave : signal:string -> t -> unit Deferred.Or_error.t

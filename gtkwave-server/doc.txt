@@ -1,30 +1,103 @@
-# POST /call_menu_item Args: [item=STRING]
-# POST /add_comment_trace Args: [comment=STRING]
-# POST /add_wave Args: [signal=STRING]
-# POST /remove_wave Args: [signal=STRING]
-# POST /find_next_edge Args: [signal=STRING]
-# POST /find_prev_edge Args: [signal=STRING]
+# A HTTP server for GTKWave's Tcl interface
+# Tested with GTKWave v3.3.116
+# Requires [tcllib]
+
+# Security: This does not handle any input sanitization. This server should
+# only ever be run on a link-local address, Do NOT expose to an external
+# network.
+
+# Use: Launch gtkwave with the `-W` flag. Once the Tcl REPL launches, run
+# [source server.tcl] to start the server.
+
+# POST /call_menu_item
+#    Args: [item=STRING]
+
+# POST /add_comment_trace
+#    Args: [comment=STRING]
+
+# POST /add_wave
+#    Args: [signal=STRING]
+
+# POST /add_wave_advanced
+#    Args: [signal=STRING color=STRING format=STRING]
+#    Color options: Normal/Red/Orange/Yellow/Green/Blue/Indigo/Violet
+#    Format options: Hex/Decimal/Signed_Decimal/Binary/Octal/ASCII
+
+# POST /remove_wave
+#    Args: [signal=STRING]
+
+# POST /find_next_edge
+#    Args: [signal=STRING]
+
+# POST /find_prev_edge
+#    Args: [signal=STRING]
+
 # POST /open_tree_node Args: [node=STRING]
-# GET /get_displayed_waves (NOTE: this excludes comment and blank traces, so it does not match trace indices)
+
+# GET /get_displayed_waves 
+#    (NOTE: this excludes comment and blank traces, so it does not match trace indices)
+
 # GET /get_dumpfile_name
+
 # GET /get_dumpfile_type (VCD/PVCD/LXT/LXT2/GHW/VZT)
+
 # GET /get_dumpfile_time_range
+
 # GET /get_all_signals
+
 # GET /get_marker_position (-1 means not added)
-# POST /set_marker_position Args: [position=INT] (-1 to remove)
-# POST /get_named_marker_position Args:[marker=A-Z] (-1 means not added)
-# POST /set_named_marker_position Args: [marker=A-Z position=INT comment=STRING] (-1 to remove)
+
+# POST /set_marker_position 
+#    Args: [position=INT] (-1 to remove)
+
+# POST /get_named_marker_position
+#    Args:[marker=A-Z] (-1 means not added)
+
+# POST /set_named_marker_position
+#    Args: [marker=A-Z position=INT comment=STRING] (-1 to remove)
+
 # GET /get_window_time_range
-# POST /set_window_time_range Args: [start=INT end=INT]
-# POST /get_signal_value_at_time Args: [signal=STRING time=INT]
-# POST /get_signal_transitions Args: [signal=STRING start_time=INT end_time=INT max=INT direction=forward/backward]
+
+# POST /set_window_time_range
+#    Args: [start=INT end=INT]
+
+# POST /get_signal_value_at_time
+#    Args: [signal=STRING time=INT]
+
+# POST /get_signal_transitions
+#    Args: [signal=STRING start_time=INT end_time=INT max=INT direction=forward/backward]
+
 # POST /reload_file
-# POST /highlight_signal Args: [signal=STRING]
+
+# POST /highlight_signal
+#    Args: [signal=STRING]
+
 # POST /unhighlight_all
-# POST /set_filter_directory Args: [path=STRING]
-# POST /load_translate_file Args: [filename=STRING] (Path can be relative to filter directory or absolute)
-# POST /load_translate_process_file Args: [filename=STRING] (Path can be relative to filter directory or absolute)
-# POST /load_transaction_process_file Args: [filename=STRING] (Path can be relative to filter directory or absolute)
-# POST /apply_translate_file Args: [signal=STRING filename=STRING] (Path can be relative to filter directory or absolute)
-# POST /apply_translate_process_file Args: [signal=STRING filename=STRING] (Path can be relative to filter directory or absolute)
-# POST /apply_transaction_process_file Args: [signal=STRING filename=STRING] (Path can be relative to filter directory or absolute)
+
+# POST /set_filter_directory
+#    Args: [path=STRING]
+
+# POST /load_translate_file
+#    Args: [filename=STRING]
+#    (Path can be relative to filter directory or absolute)
+
+# POST /load_translate_process_file
+#    Args: [filename=STRING]
+#    (Path can be relative to filter directory or absolute)
+
+# POST /load_transaction_process_file
+#    Args: [filename=STRING]
+#    (Path can be relative to filter directory or absolute)
+
+# POST /apply_translate_file
+#    Args: [signal=STRING filename=STRING]
+#    (Path can be relative to filter directory or absolute)
+
+# POST /apply_translate_process_file
+#    Args: [signal=STRING filename=STRING]
+#    (Path can be relative to filter directory or absolute)
+
+# POST /apply_transaction_process_file
+#    Args: [signal=STRING filename=STRING]
+#    (Path can be relative to filter directory or absolute)
+
